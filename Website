@@ -1,5 +1,5 @@
 Website/
-├── index.html       (your HTML file)
-├── images/          (your folder for images)
+├── index.html       
+├── images/          
 │   └── background.jpeg
-└── style.css        (your CSS file, if separate)
+└── style.css       
