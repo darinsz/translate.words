@@ -105,3 +105,38 @@
 
 </body>
 </html>
+
+<h1>Словарь</h1>
+
+<nav>
+  <button onclick="showCategory('byt')">Быт</button>
+  <button onclick="showCategory('priroda')">Природа</button>
+  <button onclick="showCategory('eda')">Еда</button>
+</nav>
+
+<div id="words"></div>
+
+<script>
+const dictionary = {
+  byt: [
+    "Киіз үй — юрта",
+    "Ауыл — деревня",
+    "Шаңырақ — верх юрты"
+  ],
+  priroda: [
+    "Жусан — полынь",
+    "Айғыр — жеребец",
+    "Сай — овраг"
+  ],
+  eda: [
+    "Қымыз — кумыс",
+    "Шұбат — напиток из верблюжьего молока",
+    "Баурсақ — жареное тесто"
+  ]
+};
+
+function showCategory(category) {
+  const container = document.getElementById("words");
+  container.innerHTML = "<ul>" + dictionary[category].map(word => `<li>${word}</li>`).join("") + "</ul>";
+}
+</script>
