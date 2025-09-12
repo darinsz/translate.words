@@ -2,108 +2,132 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Угадай перевод</title>
+  <title>Словарь-игра</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-image: url("images/background.jpeg");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
       text-align: center;
-      padding-top: 50px;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 20px;
     }
-    .game-box {
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      display: inline-block;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    h1 {
+      color: #333;
     }
-    input {
-      padding: 10px;
+    select, input, button {
       font-size: 16px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-left: 10px;
+      padding: 8px;
+      margin: 10px;
     }
     #result {
-      margin-top: 20px;
       font-weight: bold;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
+  <h1>Угадай перевод</h1>
 
-  <div class="game-box">
-    <h1>Угадай перевод</h1>
-    <p id="wordToTranslate">Слово: </p>
+  <!-- категории -->
+  <select id="category" onchange="nextWord()">
+    <option value="all">Все слова</option>
+    <option value="family">Семья</option>
+    <option value="nature">Природа</option>
+    <option value="tradition">Традиции</option>
+    <option value="life">Быт</option>
+    <option value="food">Еда</option>
+  </select>
 
-    <input type="text" id="userAnswer" placeholder="Введите перевод">
-    <button onclick="checkAnswer()">Проверить</button>
-    <button onclick="nextWord()">Следующее слово</button>
+  <p id="wordToTranslate">Слово: </p>
 
-    <div id="result"></div>
-  </div>
+  <input type="text" id="answer" placeholder="Введите перевод">
+  <button onclick="checkAnswer()">Проверить</button>
+  <button onclick="nextWord()">Следующее слово</button>
+
+  <p id="result"></p>
 
   <script>
     const dictionary = {
-      "жаным": "душа моя, дорогой",
-      "бауыр": "брат",
-      "батыр": "герой",
-      "аға": "старший брат",
-      "қарындас": "младшая сестра",
-      "сіңлі": "младшая сестра",
-      "іні": "младший брат",
-      "апа": "старшая сестра",
-      "ана": "мама",
-      "әке": "папа",
-      "дос": "друг",
-      "махаббат": "любовь",
-      "қазақ": "казах",
-      "ел": "народ",
-      "жер": "земля",
-      "тіл": "язык",
-      "сәлем": "привет",
-      "отбасы": "семья",
-      "үй": "дом"
+      family: {
+        "жаным": "душа моя, дорогой",
+        "бауыр": "брат",
+        "аға": "старший брат",
+        "қарындас": "младшая сестра",
+        "сіңлі": "младшая сестра",
+        "іні": "младший брат",
+        "апа": "старшая сестра",
+        "ана": "мама",
+        "әке": "папа",
+        "отбасы": "семья"
+      },
+      nature: {
+        "жер": "земля",
+        "ел": "народ",
+        "көк": "небо, степь",
+        "жусан": "полынь"
+      },
+      tradition: {
+        "батыр": "герой, воин",
+        "той": "праздник",
+        "домбыра": "национальный инструмент"
+      },
+      life: {
+        "үй": "дом",
+        "киіз үй": "юрта",
+        "шаңырақ": "верх юрты"
+      },
+      food: {
+        "қымыз": "кумыс",
+        "шұбат": "напиток из верблюжьего молока",
+        "бауырсақ": "жареное тесто",
+        "қазы": "конская колбаса"
+      }
     };
-<h1>Словарь</h1>
 
     let currentWord = "";
+    let currentCategory = "all";
 
-    function getRandomWord() {
-      const keys = Object.keys(dictionary);
-      return keys[Math.floor(Math.random() * keys.length)];
+    function getWords(category) {
+      if (category === "all") {
+        return Object.assign({}, 
+          dictionary.family, 
+          dictionary.nature, 
+          dictionary.tradition, 
+          dictionary.life, 
+          dictionary.food
+        );
+      }
+      return dictionary[category];
     }
 
     function nextWord() {
-      document.getElementById("result").textContent = "";
-      currentWord = getRandomWord();
-      document.getElementById("wordToTranslate").textContent = `Слово: ${currentWord}`;
-      document.getElementById("userAnswer").value = "";
+      currentCategory = document.getElementById("category").value;
+      const words = getWords(currentCategory);
+      const keys = Object.keys(words);
+      currentWord = keys[Math.floor(Math.random() * keys.length)];
+      document.getElementById("wordToTranslate").innerText = "Слово: " + currentWord;
+      document.getElementById("answer").value = "";
+      document.getElementById("result").innerText = "";
     }
 
     function checkAnswer() {
-  const userInput = document.getElementById("userAnswer").value.trim().toLowerCase();  // Convert user input to lowercase
-  const correctAnswer = dictionary[currentWord].toLowerCase();  // Convert the correct answer to lowercase
+      const words = getWords(currentCategory);
+      const correct = words[currentWord].toLowerCase();
+      const userAnswer = document.getElementById("answer").value.toLowerCase();
 
-  if (userInput && correctAnswer.includes(userInput)) {
-    document.getElementById("result").textContent = "Правильно!";
-    document.getElementById("result").style.color = "green";
-  } else {
-    document.getElementById("result").textContent = `Неправильно. Правильный ответ: ${dictionary[currentWord]}`;
-    document.getElementById("result").style.color = "red";
-  }
-}
+      if (userAnswer === correct) {
+        document.getElementById("result").innerText = "✅ Правильно!";
+        document.getElementById("result").style.color = "green";
+      } else {
+        document.getElementById("result").innerText = "❌ Неправильно. Правильный ответ: " + words[currentWord];
+        document.getElementById("result").style.color = "red";
+      }
+    }
 
-
-    // старт
-    nextWord();
+    // запуск при загрузке
+    window.onload = nextWord;
   </script>
-
 </body>
 </html>
+
 
