@@ -126,21 +126,22 @@
 
     // проверяем ответ
     function checkAnswer() {
-      const userAnswer = document.getElementById("answer").value.trim().toLowerCase();
+  const userAnswer = document.getElementById("answer").value.trim().toLowerCase();
 
-      const isCorrect = currentAnswers.some(ans =>
-        ans.toLowerCase().includes(userAnswer) || userAnswer.includes(ans.toLowerCase())
-      );
+  const isCorrect = currentAnswers.some(ans =>
+    ans.toLowerCase() === userAnswer
+  );
 
-      if (isCorrect && userAnswer !== "") {
-        document.getElementById("result").innerText = "✅ Правильно!";
-        document.getElementById("result").style.color = "green";
-      } else {
-        document.getElementById("result").innerText =
-          "❌ Неправильно. Правильный ответ: " + currentAnswers.join(", ");
-        document.getElementById("result").style.color = "red";
-      }
-    }
+  if (isCorrect && userAnswer !== "") {
+    document.getElementById("result").innerText = "✅ Правильно!";
+    document.getElementById("result").style.color = "green";
+  } else {
+    document.getElementById("result").innerText =
+      "❌ Неправильно. Правильный ответ: " + currentAnswers.join(", ");
+    document.getElementById("result").style.color = "red";
+  }
+}
+
 
     // старт при загрузке
     window.onload = nextWord;
