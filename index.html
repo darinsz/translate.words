@@ -49,92 +49,101 @@
   <script>
     const dictionary = {
       family: {
-        "жаным": ["душа моя" , "дорогой"],
-        "бауыр": "брат",
-        "аға": "старший брат",
-        "қарындас": "младшая сестра",
-        "сіңлі": "младшая сестра",
-        "іні": "младший брат",
-        "апа": "старшая сестра",
-        "ана": "мама",
-        "әке": "папа",
-        "отбасы": "семья"
+        "жаным": ["душа моя", "дорогой"],
+        "бауыр": ["брат"],
+        "аға": ["старший брат"],
+        "қарындас": ["младшая сестра"],
+        "сіңлі": ["младшая сестра"],
+        "іні": ["младший брат"],
+        "апа": ["старшая сестра"],
+        "ана": ["мама"],
+        "әке": ["папа"],
+        "отбасы": ["семья"]
       },
       nature: {
-        "жер": "земля",
-        "ел": "народ",
-        "көк":["небо" , "степь"],
-        "жусан": "полынь",
-        "тау": "гора",
-        "өзен": "река",
-        "дала": "степь",
-        "орман": "лес"
+        "жер": ["земля"],
+        "ел": ["народ"],
+        "көк": ["небо", "степь"],
+        "жусан": ["полынь"],
+        "тау": ["гора"],
+        "өзен": ["река"],
+        "дала": ["степь"],
+        "орман": ["лес"]
       },
       tradition: {
-        "батыр": "герой, воин",
-        "той": "праздник",
-        "домбыра": "национальный инструмент",
-        "жыр": ["поэма","песня"],
-        "айтыс":["состязание поэтов","соревнование поэтов","соревнование акынов","состязание акынов"],
-        "ақын" : ["поэт-импровизатор","поэт"]
+        "батыр": ["герой", "воин"],
+        "той": ["праздник","пир"],
+        "жыр": ["поэма", "песня"],
+        "айтыс": ["состязание поэтов", "соревнование акынов"],
+        "ақын": ["поэт-импровизатор", "поэт"]
       },
       life: {
-        "үй": "дом",
-        "киіз үй": "юрта",
-        "шаңырақ": "верх юрты"
+        "үй": ["дом"],
+        "киіз үй": ["юрта"],
+        "шаңырақ": ["верх юрты"]
       },
       food: {
         "қымыз": ["кумыс", "кобылье молоко"],
         "шұбат": ["напиток из верблюжьего молока", "верблюжье молоко"],
-        "бауырсақ": "жареное тесто",
-        "қазы": "конская колбаса"
+        "бауырсақ": ["жареное тесто"],
+        "қазы": ["конская колбаса"]
       }
     };
 
     let currentWord = "";
-    let currentCategory = "all";
+    let currentAnswers = [];
 
+    // берём слова из категории
     function getWords(category) {
+      let words = [];
       if (category === "all") {
-        return Object.assign({}, 
-          dictionary.family, 
-          dictionary.nature, 
-          dictionary.tradition, 
-          dictionary.life, 
-          dictionary.food
-        );
+        for (let cat in dictionary) {
+          for (let word in dictionary[cat]) {
+            words.push({ word: word, answers: dictionary[cat][word] });
+          }
+        }
+      } else {
+        for (let word in dictionary[category]) {
+          words.push({ word: word, answers: dictionary[category][word] });
+        }
       }
-      return dictionary[category];
+      return words;
     }
 
+    // выбираем следующее слово
     function nextWord() {
-      currentCategory = document.getElementById("category").value;
-      const words = getWords(currentCategory);
-      const keys = Object.keys(words);
-      currentWord = keys[Math.floor(Math.random() * keys.length)];
+      const category = document.getElementById("category").value;
+      const words = getWords(category);
+
+      const random = words[Math.floor(Math.random() * words.length)];
+      currentWord = random.word;
+      currentAnswers = Array.isArray(random.answers) ? random.answers : [random.answers];
+
       document.getElementById("wordToTranslate").innerText = "Слово: " + currentWord;
       document.getElementById("answer").value = "";
       document.getElementById("result").innerText = "";
     }
 
+    // проверяем ответ
     function checkAnswer() {
-      const words = getWords(currentCategory);
-      const correct = words[currentWord].toLowerCase();
-      const userAnswer = document.getElementById("answer").value.toLowerCase();
+      const userAnswer = document.getElementById("answer").value.trim().toLowerCase();
 
-      if (userAnswer === correct) {
+      const isCorrect = currentAnswers.some(ans =>
+        ans.toLowerCase().includes(userAnswer) || userAnswer.includes(ans.toLowerCase())
+      );
+
+      if (isCorrect && userAnswer !== "") {
         document.getElementById("result").innerText = "✅ Правильно!";
         document.getElementById("result").style.color = "green";
       } else {
-        document.getElementById("result").innerText = "❌ Неправильно. Правильный ответ: " + words[currentWord];
+        document.getElementById("result").innerText =
+          "❌ Неправильно. Правильный ответ: " + currentAnswers.join(", ");
         document.getElementById("result").style.color = "red";
       }
     }
 
-    // запуск при загрузке
+    // старт при загрузке
     window.onload = nextWord;
   </script>
 </body>
 </html>
-
-
