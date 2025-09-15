@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Угадай перевод</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      padding-top: 50px;
+    }
+    .game-box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-left: 10px;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-box">
+    <h1>Угадай перевод</h1>
+    <p id="wordToTranslate">Слово: </p>
+
+    <input type="text" id="userAnswer" placeholder="Введите перевод">
+    <button onclick="checkAnswer()">Проверить</button>
+    <button onclick="nextWord()">Следующее слово</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const dictionary = {
+      "жаны́м": "душа моя, дорогой",
+      "бауыр": "брат",
+      "ба́тыр": "герой",
+      "аға́": "старший брат",
+      "қарында́с": "младшая сестра",
+      "сіңлі́": "младшая сестра",
+      "іні́": "младший брат",
+      "апа́": "старшая сестра",
+      "ана́": "мама",
+      "әке́": "папа",
+      "дос": "друг",
+      "махаббат": "любовь",
+      "қазақ": "казах",
+      "ел": "народ",
+      "жер": "земля",
+      "тіл": "язык",
+      "құдай": "бог"
+    };
+
+    let currentWord = "";
+
+    function getRandomWord() {
+      const keys = Object.keys(dictionary);
+      return keys[Math.floor(Math.random() * keys.length)];
+    }
+
+    function nextWord() {
+      document.getElementById("result").textContent = "";
+      currentWord = getRandomWord();
+      document.getElementById("wordToTranslate").textContent = `Слово: ${currentWord}`;
+      document.getElementById("userAnswer").value = "";
+    }
+
+    function checkAnswer() {
+      const userInput = document.getElementById("userAnswer").value.trim().toLowerCase();
+      const correctAnswer = dictionary[currentWord].toLowerCase();
+
+      if (userInput && correctAnswer.includes(userInput)) {
+        document.getElementById("result").textContent = "Правильно!";
+        document.getElementById("result").style.color = "green";
+      } else {
+        document.getElementById("result").textContent = `Неправильно. Правильный ответ: ${dictionary[currentWord]}`;
+        document.getElementById("result").style.color = "red";
+      }
+    }
+
+    // старт
+    nextWord();
+  </script>
+
+</body>
+</html>
