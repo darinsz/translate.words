@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Игра с картинками</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+    }
+    img {
+      max-width: 300px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+    #result {
+      font-weight: bold;
+      margin-top: 15px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Угадай казахизм по картинке!</h1>
+  <p id="question">Вопрос появится здесь</p>
+  <img id="image" src="" alt="Картинка">
+
+  <div id="answers"></div>
+
+  <p id="result"></p>
+  <button onclick="nextQuestion()">Следующий вопрос</button>
+
+  <script>
+    // Массив вопросов
+    const questions = [
+      {
+        text: "Что изображено на картинке?",
+        image: "images/юрта.jpg",
+        answers: ["Юрта", "Айран", "Бешбармак"],
+        correct: 0
+      },
+      {
+        text: "Что изображено на картинке?",
+        image: "images/семья.jpg",
+        answers: ["Отбасы", "Жаным", "Апа"],
+        correct: 0
+      },
+      {
+        text: "Это традиционное казахское блюдо:",
+        image: "images/бешбармак.jpg",
+        answers: ["Плов", "Бешбармак", "Манты"],
+        correct: 1
+      }
+    ];
+
+    let current = 0;
+
+    function showQuestion() {
+      document.getElementById("question").innerText = questions[current].text;
+      document.getElementById("image").src = questions[current].image;
+
+      let answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+
+      questions[current].answers.forEach((answer, index) => {
+        let btn = document.createElement("button");
+        btn.innerText = answer;
+        btn.onclick = () => checkAnswer(index);
+        answersDiv.appendChild(btn);
+      });
+
+      document.getElementById("result").innerText = "";
+    }
+
+    function checkAnswer(index) {
+      if (index === questions[current].correct) {
+        document.getElementById("result").innerText = "✅ Правильно!";
+      } else {
+        document.getElementById("result").innerText = "❌ Неправильно!";
+      }
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        document.getElementById("question").innerText = "Игра окончена 🎉";
+        document.getElementById("image").style.display = "none";
+        document.getElementById("answers").innerHTML = "";
+        document.getElementById("result").innerText = "";
+      }
+    }
+
+    // Показать первый вопрос при загрузке
+    showQuestion();
+  </script>
+</body>
+</html>
